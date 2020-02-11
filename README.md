@@ -10,7 +10,7 @@ First, install the extension.
 npm install laravel-mix-image-size-checker --save-dev
 ```
 
-Then, require it within your `webpack.mix.js` file, and setting `srcPattern` is required. like so:
+Then, add `imageSizeChecker` function on `webpack.mix.js`, and set `srcPattern` is required. like so:
 
 ```js
 let mix = require('laravel-mix')
