@@ -1,0 +1,32 @@
+{
+  "name": "laravel-mix-image-size-checker",
+  "version": "0.1.0",
+  "description": "Checking image file size and width.",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryotamoriyama/laravel-mix-image-size-checker.git"
+  },
+  "keywords": [
+    "laravel-mix"
+  ],
+  "author": "Ryota Moriyama",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryotamoriyama/laravel-mix-image-size-checker/issues"
+  },
+  "homepage": "https://github.com/ryotamoriyama/laravel-mix-image-size-checker#readme",
+  "devDependencies": {
+    "laravel-mix": "^5.0.1"
+  },
+  "dependencies": {
+    "fs-extra": "^8.1.0",
+    "glob": "^7.1.6",
+    "image-size": "^0.8.3",
+    "path": "^0.12.7"
+  },
+  "peerDependencies": {
+    "laravel-mix": ">=4.0.0"
+  }
+}
