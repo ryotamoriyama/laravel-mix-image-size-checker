@@ -20,8 +20,8 @@ class ImageSizeChecker {
             onErrorProcessExit
         } = Object.assign(defaultOptions, extraOptions)
         let errRes = {}
-        glob.sync(srcPattern).forEach((path) => {
-            if (path.match(/\.(jpe?g|png|gif)$/i) === false) {
+        glob.sync(srcPattern).forEach((imagePath) => {
+            if (imagePath.match(/\.(jpe?g|png|gif)$/i) === false) {
                 return
             }
 
