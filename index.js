@@ -6,56 +6,54 @@ const imageSize = require('image-size')
 const defaultOptions = {
     maxSize: 300000,
     maxWidth: 1600,
-    onErrorProcessExit: true
-    //srcPattern: 'resources/images/**/*'
+    forceResize: true,
+    onErrorProcessExit: true,
+    srcPattern: 'resources'
 }
 
 class ImageSizeChecker {
     register(extraOptions = {}) {
-        const options = Object.assign(defaultOptions, extraOptions)
-        let result = {
-            size: [],
-            width: []
-        }
-        let size
-        let width
-        const images = glob.sync(options.srcPattern).forEach((path) => {
-            if (path.match(/\.(jpe?g|png|gif)$/i) == false) {
+        const {
+            srcPattern,
+            maxSize,
+            maxWidth,
+            onErrorProcessExit
+        } = Object.assign(defaultOptions, extraOptions)
+        let errRes = {}
+        glob.sync(srcPattern).forEach((path) => {
+            if (path.match(/\.(jpe?g|png|gif)$/i) === false) {
                 return
             }
-            if ((size = fs.statSync(path).size) > options.maxSize) {
-                result.size.push({
-                    path: path,
-                    size: size
-                })
-            } else if ((width = imageSize(path).width) > options.maxWidth) {
-                result.width.push({
-                    path: path,
-                    size: width
-                })
+
+            let size = fs.statSync(imagePath).size
+            if (size > maxSize) {
+                errRes[imagePath] = {}
+                errRes[imagePath]['size'] = (size >= 1024 * 1024) ? Math.floor(size / (1024 * 1024)) + 'MB' : Math.floor(size / 1024) + 'KB';
+            }
+
+            let width = imageSize(imagePath).width
+            if (width > maxWidth) {
+                if (!errRes[imagePath]) errRes[imagePath] = {}
+                errRes[imagePath]["width"] = width + 'px';
+                if (forceResize) {
+                    sharp(imagePath)
+                        .resize(maxWidth)
+                }
             }
         })
+
         try {
-            if (result.size.length > 0 || result.width.length > 0) {
-                result.size.sort(sizeSort)
-                result.width.sort(sizeSort)
-                throw new Error("Max size is " + options.maxSize + "B. Max width is " + options.maxWidth + "px")
+            if (Object.keys(errRes).length > 0) {
+                throw new Error("Max size is " + maxSize + "B. Max width is " + maxWidth + "px")
             }
         } catch (e) {
-            console.error(result)
-            if (options.onErrorProcessExit) {
+            console.log("Over Size Images");
+            console.error(errRes)
+            if (onErrorProcessExit) {
                 console.error(e)
                 process.exit()
             }
         }
-    }
-}
-
-function sizeSort(a, b) {
-    if (a.size < b.size) {
-        return 1
-    } else {
-        return -1
     }
 }
 
