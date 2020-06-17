@@ -4,10 +4,9 @@ const glob = require('glob')
 const imageSize = require('image-size')
 
 const defaultOptions = {
-    maxSize: 300000,
-    maxWidth: 1600,
-    forceResize: true,
-    onErrorProcessExit: true,
+    maxSize: 500000,
+    maxWidth: 2560,
+    onErrorProcessExit: false,
     srcPattern: 'resources'
 }
 
@@ -17,11 +16,12 @@ class ImageSizeChecker {
             srcPattern,
             maxSize,
             maxWidth,
+            forceResize,
             onErrorProcessExit
         } = Object.assign(defaultOptions, extraOptions)
         let errRes = {}
         glob.sync(srcPattern).forEach((imagePath) => {
-            if (imagePath.match(/\.(jpe?g|png|gif)$/i) === false) {
+            if (imagePath.match(/\.(jpe?g|png|gif)$/i) === null) {
                 return
             }
 
@@ -35,10 +35,6 @@ class ImageSizeChecker {
             if (width > maxWidth) {
                 if (!errRes[imagePath]) errRes[imagePath] = {}
                 errRes[imagePath]["width"] = width + 'px';
-                if (forceResize) {
-                    sharp(imagePath)
-                        .resize(maxWidth)
-                }
             }
         })
 
